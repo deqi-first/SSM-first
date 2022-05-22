@@ -16,6 +16,10 @@
         <servlet-name>mvc_xmq</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>mvc_xmq</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
@@ -31,4 +35,7 @@
         <filter-name>encoding</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+    <welcome-file-list>
+        <welcome-file>/</welcome-file>
+    </welcome-file-list>
 </web-app>
