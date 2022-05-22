@@ -11,15 +11,13 @@
     <script type="text/javascript" src="jquery/jquery-3.5.1.js"></script>
     <script type="text/javascript" src="jquery/bootstrap-3.4.1/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript">
+        function logout() {
+            window.location.href = "settings/qx/user/logout.do";
+        }
+        function closeModal() {
+            $("#closeBtn").click();
+        }
         $(function () {
-            function logout() {
-                window.location.href = "settings/qx/user/logout.do";
-            }
-
-            function closeModal() {
-                $("#closeBtn").click();
-            }
-
             // $("#activityId").click(function () {
             //     window.open("/workbench/activity/toIndex.do", "workAreaFrame")
             // })
@@ -134,6 +132,7 @@
             <iframe style="border-width:0px;width:100%;height:100%;" name="workAreaFrame">
             </iframe>
         </div>
-    </div> </div>
+    </div>
+</div>
 </body>
 </html>

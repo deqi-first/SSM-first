@@ -3,6 +3,7 @@ package com.lyx.settings.web.controller;
 
 import com.lyx.commons.contants.Contants;
 import com.lyx.commons.domain.ReturnObject;
+import com.lyx.commons.utils.DateUtils;
 import com.lyx.settings.domain.User;
 import com.lyx.settings.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +45,7 @@ public class UserController {
             returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
             returnObject.setMessage("用户名或密码错误");
         } else {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String format = simpleDateFormat.format(new Date());
+             String format = DateUtils.getDate();
             if (format.compareTo(user.getuExpireTime()) > 0) {
                 //登录失败，账号已经过期了
                 returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
