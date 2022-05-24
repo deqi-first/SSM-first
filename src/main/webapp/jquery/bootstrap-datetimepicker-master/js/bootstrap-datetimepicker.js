@@ -1503,7 +1503,7 @@
       meridiem:    ['am', 'pm'],
       suffix:      ['st', 'nd', 'rd', 'th'],
       today:       'Today',
-      clear:       'Clear'
+      clear:       '清空'
     }
   };
 

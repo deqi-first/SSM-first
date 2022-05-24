@@ -6,6 +6,9 @@ import com.lyx.workbench.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @program:IntelliJ IDEA
  * @description: 保存市场活动实现类
@@ -19,5 +22,15 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     public int saveActivity(Activity activity) {
         return activityMapper.insertActivity(activity);
+    }
+
+    @Override
+    public List<Activity> queryActivityByConditionForPage(Map<String, Object> map) {
+        return activityMapper.selectActivityByControllerForPage(map);
+    }
+
+    @Override
+    public int queryCountOfActivityByCondition(Map<String, Object> map) {
+        return activityMapper.selectCountOfActivityByCondition(map);
     }
 }

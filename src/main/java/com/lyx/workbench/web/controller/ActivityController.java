@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @program:IntelliJ IDEA
@@ -60,5 +62,22 @@ public class ActivityController {
             returnObject.setMessage("系统忙,请稍后重试...");
         }
         return returnObject;
+    }
+
+    @RequestMapping("/workbench/activity/search.do")
+    public @ResponseBody Object search(String name,String owner,String startDate,String endDate,Integer pageNo,Integer pageSize){
+        Map<String,Object> map = new HashMap<>();
+        map.put("activity_name",name);
+        map.put("activity_owner",owner);
+        map.put("activity_start_date",startDate);
+        map.put("activity_end_date",endDate);
+        map.put("pageNo",pageNo-1);
+        map.put("pageSize",pageSize);
+        List<Activity> activities = activityService.queryActivityByConditionForPage(map);
+        int totalRows = activityService.queryCountOfActivityByCondition(map);
+        Map<String,Object> resultMap = new HashMap<>();
+        resultMap.put("activities",activities);
+        resultMap.put("totalRows",totalRows);
+        return resultMap;
     }
 }

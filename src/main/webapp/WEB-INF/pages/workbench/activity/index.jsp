@@ -6,22 +6,29 @@
 <html>
 <head>
     <base href="<%=basePath%>">
-    <title>Title</title>
-    <link rel="stylesheet" href="jquery/bootstrap-3.4.1/dist/css/bootstrap.min.css">
-    <script type="text/javascript" src="jquery/jquery-3.5.1.js"></script>
-    <script type="text/javascript" src="jquery/bootstrap-3.4.1/dist/js/bootstrap.min.js"></script>
+    <title>市场活动主页面</title>
+    <script type="text/javascript"
+            src="jquery/bootstrap-datetimepicker-master/sample in bootstrap v3/jquery/jquery-1.8.3.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="jquery/bootstrap-datetimepicker-master/sample in bootstrap v3/bootstrap/css/bootstrap.css">
+    <script type="text/javascript"
+            src="jquery/bootstrap-datetimepicker-master/sample in bootstrap v3/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css">
+    <script type="text/javascript"
+            src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript"
+            src="jquery/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
     <script type="text/javascript">
 
         $(function () {
             //给“创建”按钮添加单击事件
             $("#createActivityBtn").click(function () {
-                //初始化工作
-                //任意js代码
+                //初始化,每次点击创建按钮，清空上次填写的数据
                 $("#create-ActivityForm").get(0).reset();
                 //弹出创建市场活动的模态窗口
                 $("#create-ActivityModel").modal("show");
             });
-
             //创建市场活动的模态窗口"保存"按钮的单击事件
             $("#saveActivityBtn").click(function () {
                 var owner = $("#create-activityOwner").val();
@@ -45,27 +52,27 @@
                     }
                 }
                 var regExp = /^(([1-9]\d*)|0)$/;
-                if(!regExp.test(cost)){
+                if (!regExp.test(cost)) {
                     alert("成本只能为非负整数");
                     return;
                 }
                 //发送请求
                 $.ajax({
-                    url:"/workbench/activity/save.do",
-                    data:{
-                        activityOwner:owner,
-                        activityName:name,
-                        activityStartDate:startDate,
-                        activityEndDate:endDate,
-                        activityCost:cost,
-                        activityDescription:description
+                    url: "/workbench/activity/save.do",
+                    data: {
+                        activityOwner: owner,
+                        activityName: name,
+                        activityStartDate: startDate,
+                        activityEndDate: endDate,
+                        activityCost: cost,
+                        activityDescription: description
                     },
-                    type:"post",
-                    success:function (ret) {
-                        if(ret.code=="1"){
+                    type: "post",
+                    success: function (ret) {
+                        if (ret.code == "1") {
                             alert("保存成功");
                             $("#create-ActivityModel").modal("hide");
-                        }else{
+                        } else {
                             alert(ret.message);
                             $("#create-ActivityModel").modal("show");
                         }
@@ -73,7 +80,86 @@
 
                 });
             });
+            //日历插件
+            $("#create-activityStartDate").datetimepicker({
+                language: 'zh-CN',
+                format: 'yyyy-mm-dd',
+                minView: 'month',
+                initialDate: new Date(),
+                autoclose: true,
+                todayBtn: true,
+                clearBtn: true
+            });
+            $("#create-activityEndDate").datetimepicker({
+                language: 'zh-CN',
+                format: 'yyyy-mm-dd',
+                minView: 'month',
+                initialDate: new Date(),
+                autoclose: true,
+                todayBtn: true,
+                clearBtn: true
+            });
+            $("#query_startDate").datetimepicker({
+                language: 'zh-CN',
+                format: 'yyyy-mm-dd',
+                minView: 'month',
+                initialDate: new Date(),
+                autoclose: true,
+                todayBtn: true,
+                clearBtn: true
+            });
+            $("#query_endDate").datetimepicker({
+                language: 'zh-CN',
+                format: 'yyyy-mm-dd',
+                minView: 'month',
+                initialDate: new Date(),
+                autoclose: true,
+                todayBtn: true,
+                clearBtn: true
+            });
+            //当市场活动主页面加载完成，查询所有数据的第一页集街所有数据的总条数
+            //收集参数
+            var name = $("#query_name").val();
+            var owner = $("#query_owner").val();
+            var startDate = $("#query_startDate").val();
+            var endDate = $("#query_endDate").val();
+            let pageNo = 1;
+            let pageSize =10;
+            $.ajax({
+                url: "/workbench/activity/search.do",
+                data: {
+                    name: name,
+                    owner: owner,
+                    startDate: startDate,
+                    endDate: endDate,
+                    pageNo: pageNo,
+                    pageSize: pageSize
+                },
+                type: 'post',
+                dataType: 'json',
+                success: function (ret) {
+                    //显示总条数
+                    $("#totalRowsId").text(ret.totalRows);
+                    //显示市场活动的列表
+                    //遍历activityList,拼接所有行数据
+                    var htmlStr = "";
+                    $.each(ret.activities, function (index, object) {
+                        htmlStr += "<tr>";
+                        htmlStr += "<td><input type=\"checkbox\" value=\""+object.activityId+"\"></td>";
+                        htmlStr += "<td><a style=\"text-decoration: none;cursor:pointer;\" onclick=\"window.location.href='#'\">"+object.activityName+"</a></td>";
+                        htmlStr += "<td>"+object.activityOwner+"</td>";
+                        htmlStr += "<td>"+object.activityStartDate+"</td>";
+                        htmlStr += "<td>"+object.activityEndDate+"</td>";
+                        htmlStr += "</tr>";
+                    });
+                    //$("#tbodyId").html(htmlStr);覆盖追加
+                    //$("#tbodyId").append(jsp页面片段的字符串);追加显示
+                    $("#tbodyId").html(htmlStr);
+                }
+            })
+
         });
+
     </script>
 </head>
 <body>
@@ -100,19 +186,16 @@
                         </div>
                         <label class="col-md-2 control-label">名称<span style="color:red">*</span></label>
                         <div class="col-md-10"><input type="text" id="create-activityName" class="form-control"/></div>
-
                     </div>
                     <div class="form-group col-md-12">
                         <label>开始日期</label>
-                        <input type="text" class="form-control" id="create-activityStartDate"/>
+                        <input type="text" class="form-control" id="create-activityStartDate" readonly/>
                         <label>结束日期</label>
-                        <input type="text" class="form-control" id="create-activityEndDate"/>
+                        <input type="text" class="form-control" id="create-activityEndDate" readonly/>
                     </div>
                     <div class="form-group col-md-12">
                         <label>成本</label>
                         <input type="text" class="form-control" id="create-activityCost"/>
-                    </div>
-                    <div class="form-group col-md-12">
                         <label>描述</label>
                         <textarea class="form-control" rows="3" id="create-activityDescription"></textarea>
                     </div>
@@ -164,8 +247,6 @@
                         <label>描述</label>
                         <textarea class="form-control" rows="3"></textarea>
                     </div>
-
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -188,7 +269,7 @@
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button">名称</button>
                             </span>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="query_name">
                     </div><!-- 名称 -->
                 </div><!-- /.col-lg-2 -->
                 <div class="col-xs-2">
@@ -196,7 +277,7 @@
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button">所有者</button>
                             </span>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="query_owner">
                     </div><!-- 所有者 -->
                 </div><!-- /.col-lg-2 -->
                 <div class="col-xs-2">
@@ -204,7 +285,7 @@
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button">开始日期</button>
                             </span>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="query_startDate">
                     </div><!-- 开始日期-->
                 </div><!-- /.col-lg-2 -->
                 <div class="col-xs-2">
@@ -212,7 +293,7 @@
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button">结束日期</button>
                             </span>
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" id="query_endDate">
                     </div><!-- 结束日期-->
                 </div><!-- /.col-lg-2 -->
                 <div class="col-xs-2">
@@ -258,31 +339,21 @@
             <th>结束日期</th>
         </tr>
         </thead>
-        <tbody>
-        <tr>
-            <td><input type="checkbox"></td>
-            <td>hhh</td>
-            <td>hhh</td>
-            <td>hhh</td>
-            <td>hhh</td>
-        </tr>
+        <tbody id="tbodyId">
+
         </tbody>
     </table>
     <!--分页查询-->
     <div class="col-md-12">
-        <button class="btn btn-default col-md-1">共xx条数据</button>
+        <button class="btn btn-default col-md-1">共<b id="totalRowsId">50</b>条数据</button>
         <div class="btn-group  col-md-4" role="group" aria-label="...">
             <button class="btn btn-default">显示</button>
             <div class="btn-group" role="group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
-                        aria-haspopup="true" aria-expanded="false">
-                    10
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a href="#">10</a></li>
-                    <li><a href="#">20</a></li>
-                </ul>
+                <select class="form-control" id="pageSize">
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="30">30</option>
+                </select>
             </div>
             <button class="btn btn-default">条/页</button>
         </div>
