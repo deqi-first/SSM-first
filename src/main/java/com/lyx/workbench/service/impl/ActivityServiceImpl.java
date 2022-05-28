@@ -26,7 +26,7 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Override
     public List<Activity> queryActivityByConditionForPage(Map<String, Object> map) {
-        return activityMapper.selectActivityByControllerForPage(map);
+        return activityMapper.selectActivityByConditionForPage(map);
     }
 
     @Override

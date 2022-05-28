@@ -19,8 +19,15 @@
             src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript"
             src="jquery/bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
-    <script type="text/javascript">
+    <!--  PAGINATION plugin -->
+    <link rel="stylesheet" type="text/css"
+          href="jquery/bs_pagination-master/bs_pagination-master/jquery.bs_pagination.min.css">
+    <script type="text/javascript"
+            src="jquery/bs_pagination-master/bs_pagination-master/jquery.bs_pagination.min.js"></script>
+    <script type="text/javascript"
+            src="jquery/bs_pagination-master/bs_pagination-master/localization/en.min.js"></script>
 
+    <script type="text/javascript">
         $(function () {
             //给“创建”按钮添加单击事件
             $("#createActivityBtn").click(function () {
@@ -119,12 +126,21 @@
             });
             //当市场活动主页面加载完成，查询所有数据的第一页集街所有数据的总条数
             //收集参数
+            queryActivityByConditionForPage(1, 5);
+            //给查询按钮添加单击事件
+            $("#queryActivityBtn").click(function () {
+                //查询所有符合条件的数据
+                queryActivityByConditionForPage(1, 5);
+            });
+
+        });
+
+        //封装函数
+        function queryActivityByConditionForPage(pageNo, pageSize) {
             var name = $("#query_name").val();
             var owner = $("#query_owner").val();
             var startDate = $("#query_startDate").val();
             var endDate = $("#query_endDate").val();
-            let pageNo = 1;
-            let pageSize =10;
             $.ajax({
                 url: "/workbench/activity/search.do",
                 data: {
@@ -145,20 +161,35 @@
                     var htmlStr = "";
                     $.each(ret.activities, function (index, object) {
                         htmlStr += "<tr>";
-                        htmlStr += "<td><input type=\"checkbox\" value=\""+object.activityId+"\"></td>";
-                        htmlStr += "<td><a style=\"text-decoration: none;cursor:pointer;\" onclick=\"window.location.href='#'\">"+object.activityName+"</a></td>";
-                        htmlStr += "<td>"+object.activityOwner+"</td>";
-                        htmlStr += "<td>"+object.activityStartDate+"</td>";
-                        htmlStr += "<td>"+object.activityEndDate+"</td>";
+                        htmlStr += "<td><input type=\"checkbox\" value=\"" + object.activityId + "\"></td>";
+                        htmlStr += "<td><a style=\"text-decoration: none;cursor:pointer;\" onclick=\"window.location.href='#'\">" + object.activityName + "</a></td>";
+                        htmlStr += "<td>" + object.activityOwner + "</td>";
+                        htmlStr += "<td>" + object.activityStartDate + "</td>";
+                        htmlStr += "<td>" + object.activityEndDate + "</td>";
                         htmlStr += "</tr>";
                     });
                     //$("#tbodyId").html(htmlStr);覆盖追加
                     //$("#tbodyId").append(jsp页面片段的字符串);追加显示
                     $("#tbodyId").html(htmlStr);
-                }
-            })
+                    var totalPages = ret.totalRows % pageSize == 0 ? ret.totalRows / pageSize : ret.totalRows / pageSize + 1;
 
-        });
+                    $("#demo_page1").bs_pagination({
+                        currentPage: pageNo,//当前页号,相当于pageNo
+                        rowsPerPage: pageSize,//每页显示条数，相当于pageSize
+                        totalRows: ret.totalRows,//总条数
+                        totalPages: totalPages,//总页数
+                        visiblePageLinks: 5,//最多可以显示的卡片数
+                        showGoToPage: true,//是否显示“跳转到”部分，默认true--显示
+                        showRowsPerPate: true,//是否显示“每页显示条数”部分，默认true--显示
+                        showRowsInfo: true,//是否显示记录的信息，默认true--显示
+
+                        onChangePage: function (event, pageObj) {
+                            queryActivityByConditionForPage(pageObj.currentPage, pageObj.rowsPerPage);
+                        }
+                    });
+                }
+            });
+        }
 
     </script>
 </head>
@@ -264,42 +295,42 @@
         <hr/>
         <div>
             <div class="row">
-                <div class="col-xs-2">
+                <div class="col-xs-3">
                     <div class="input-group">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button">名称</button>
                             </span>
                         <input type="text" class="form-control" id="query_name">
                     </div><!-- 名称 -->
-                </div><!-- /.col-lg-2 -->
-                <div class="col-xs-2">
+                </div>
+                <div class="col-xs-3">
                     <div class="input-group">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button">所有者</button>
                             </span>
                         <input type="text" class="form-control" id="query_owner">
                     </div><!-- 所有者 -->
-                </div><!-- /.col-lg-2 -->
-                <div class="col-xs-2">
+                </div>
+                <div class="col-xs-3">
                     <div class="input-group">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button">开始日期</button>
                             </span>
                         <input type="text" class="form-control" id="query_startDate">
                     </div><!-- 开始日期-->
-                </div><!-- /.col-lg-2 -->
-                <div class="col-xs-2">
+                </div>
+                <div class="col-xs-3">
                     <div class="input-group">
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button">结束日期</button>
                             </span>
                         <input type="text" class="form-control" id="query_endDate">
                     </div><!-- 结束日期-->
-                </div><!-- /.col-lg-2 -->
-                <div class="col-xs-2">
-                    <button type="button" class="btn btn-sm btn-success">查询</button>
                 </div>
-            </div><!-- /.row -->
+                <div class="col-xs-3">
+                    <button id="queryActivityBtn" type="button" class="btn btn-success">查询</button>
+                </div>
+            </div>
         </div>
     </div>
     <br/><br/>
@@ -345,7 +376,7 @@
     </table>
     <!--分页查询-->
     <div class="col-md-12">
-        <button class="btn btn-default col-md-1">共<b id="totalRowsId">50</b>条数据</button>
+        <button class="btn btn-default">共<b id="totalRowsId">50</b>条数据</button>
         <div class="btn-group  col-md-4" role="group" aria-label="...">
             <button class="btn btn-default">显示</button>
             <div class="btn-group" role="group">
@@ -357,26 +388,7 @@
             </div>
             <button class="btn btn-default">条/页</button>
         </div>
-        <div class="col-md-4">
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    <li>
-                        <a href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li>
-                        <a href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+        <div id="demo_page1">
         </div>
     </div>
 </div>

@@ -164,7 +164,7 @@
       #{activityEditTime,jdbcType=CHAR}, #{activityEditBy,jdbcType=VARCHAR})
   </insert>
 
-    <select id="selectActivityByControllerForPage" parameterType="map" resultMap="BaseResultMap">
+    <select id="selectActivityByConditionForPage" parameterType="map" resultMap="BaseResultMap">
         select a.activity_id, u1.u_login_act as activity_owner, activity_name,
         activity_start_date, activity_end_date, activity_cost,
         activity_description,activity_create_time , u2.u_login_act as activity_create_by,

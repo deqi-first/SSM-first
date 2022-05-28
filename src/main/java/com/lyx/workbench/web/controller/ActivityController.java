@@ -65,7 +65,8 @@ public class ActivityController {
     }
 
     @RequestMapping("/workbench/activity/search.do")
-    public @ResponseBody Object search(String name,String owner,String startDate,String endDate,Integer pageNo,Integer pageSize){
+    public @ResponseBody Object search(String name,String owner,String startDate,String endDate,
+                                       Integer pageNo,Integer pageSize){
         Map<String,Object> map = new HashMap<>();
         map.put("activity_name",name);
         map.put("activity_owner",owner);

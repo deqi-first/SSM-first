@@ -21,7 +21,7 @@ public interface ActivityMapper {
     int insertActivity(Activity record);
     /*
     * 条件查询市场活动的表的数据并实现分页*/
-    List<Activity> selectActivityByControllerForPage(Map<String,Object> map);
+    List<Activity> selectActivityByConditionForPage(Map<String,Object> map);
 
     int selectCountOfActivityByCondition(Map<String,Object> map);
 }
