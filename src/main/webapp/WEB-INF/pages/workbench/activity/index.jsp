@@ -79,6 +79,7 @@
                         if (ret.code == "1") {
                             alert("保存成功");
                             $("#create-ActivityModel").modal("hide");
+                            queryActivityByConditionForPage(1,$("#demo_page1").bs_pagination('getOption', 'rowsPerPage'));
                         } else {
                             alert(ret.message);
                             $("#create-ActivityModel").modal("show");
@@ -125,14 +126,92 @@
                 clearBtn: true
             });
             //当市场活动主页面加载完成，查询所有数据的第一页集街所有数据的总条数
-            //收集参数
             queryActivityByConditionForPage(1, 5);
             //给查询按钮添加单击事件
             $("#queryActivityBtn").click(function () {
                 //查询所有符合条件的数据
-                queryActivityByConditionForPage(1, 5);
+                queryActivityByConditionForPage(1, $("#demo_page1").bs_pagination('getOption', 'rowsPerPage'));
             });
+            //给全选按钮添加单击事件
+            $("#checkAll").click(function () {
+                //如果“全选”按钮是选中状态，则列表中所有checkbox都选中
+                $("#tbodyId input[type='checkbox']").prop("checked",this.checked);
+            });
+            //给动态元素添加单击事件
+            $("#tbodyId").on("click","input[type='checkbox']",function () {
+                //如果列表中的所有checkbox都选中，则全选按钮也选中
+                if($("#tbodyId input[type='checkbox']").size()==$("#tbodyId input[type='checkbox']:checked").size()){
+                    $("#checkAll").prop("checked",true);
+                }else{//如果列表中的所有checkbox至少一个没选中，则全选按钮取消选中
+                    $("#checkAll").prop("checked",false);
+                }
+            })
 
+            //删除市场活动
+            $("#deleteActivityBtn").click(function () {
+                var ids = $("#tbodyId input[type='checkbox']:checked");
+                if(ids.size()==0){
+                    alert("请选中要删除的市场活动");
+                    return;
+                }
+                if(window.confirm("确定删除吗？")){
+                    var myids = "";
+                    $.each(ids,function () {
+                        myids+="id="+this.value+"&";
+                    })
+                    myids=myids.substr(0,myids.length-1);
+                    $.ajax({
+                        url:"/workbench/activity/delete.do",
+                        data:myids,
+                        type:"post",
+                        dataType: "json",
+                        success:function (ret) {
+                            if(ret.code==1){
+                                alert("删除成功!");
+                                queryActivityByConditionForPage(1,$("#demo_page1").bs_pagination('getOption','rowsPerPage'));
+                            }else{
+                                alert(ret.message);
+                            }
+                        }
+                    })
+                }
+            })
+
+            //修改市场活动
+            $("#editActivityBtn").click(function () {
+                //获取列表中被选中的checkbox
+                var checkerIds = $("#tbodyId input[type='checkbox']:checked");
+                if (checkerIds.size()==0){
+                    alert("请选择要修改的市场活动");
+                    return;
+                }
+                if(checkerIds.size()>1){
+                    alert("每次只能选中一条数据修改");
+                    return;
+                }
+                // var id = checkerIds.val();
+                //get(0)获得的是一个DOM对象
+                var id = checkerIds.get(0).value;
+                $.ajax({
+                    url:"/workbench/activity/selectActivityById.do",
+                    data:{
+                        id:id
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success:function (ret) {
+                        $("#edit-id").val(ret.activityId);
+                        $("#edit-ActivityOwner").val(ret.activityOwner);
+                        $("#edit-ActivityName").val(ret.activityName);
+                        $("#edit-startDate").val(ret.activityStartDate);
+                        $("#edit-endDate").val(ret.activityEndDate);
+                        $("#edit-cost").val(ret.activityCost);
+                        $("#edit-describe").val(ret.activityDescription);
+                        //弹出模态窗口
+                        $("#edit-ActivityModel").modal("show");
+                    }
+                })
+            })
         });
 
         //封装函数
@@ -156,8 +235,7 @@
                 success: function (ret) {
                     //显示总条数
                     $("#totalRowsId").text(ret.totalRows);
-                    //显示市场活动的列表
-                    //遍历activityList,拼接所有行数据
+                    //显示市场活动的列表,遍历activityList,拼接所有行数据
                     var htmlStr = "";
                     $.each(ret.activities, function (index, object) {
                         htmlStr += "<tr>";
@@ -171,6 +249,8 @@
                     //$("#tbodyId").html(htmlStr);覆盖追加
                     //$("#tbodyId").append(jsp页面片段的字符串);追加显示
                     $("#tbodyId").html(htmlStr);
+                    //由于只更新了tbody的内容，所以全选按钮没有更新，如果第一页选中，则第二页也会显示
+                    $("#checkAll").prop("checked",false);
                     var totalPages = ret.totalRows % pageSize == 0 ? ret.totalRows / pageSize : ret.totalRows / pageSize + 1;
 
                     $("#demo_page1").bs_pagination({
@@ -190,7 +270,6 @@
                 }
             });
         }
-
     </script>
 </head>
 <body>
@@ -250,33 +329,34 @@
                 <h4 class="modal-title">修改市场活动</h4>
             </div>
             <form class="form-inline">
+                <input type="hidden" id="edit-id">
                 <div class="modal-body col-md-12">
                     <div class="form-group">
                         <label class="col-md-2 control-label">所有者<span style="color: red;">*</span></label>
                         <div class="col-md-10">
-                            <select class="form-control">
+                            <select class="form-control" id="edit-ActivityOwner">
                                 <c:forEach items="${requestScope.users}" var="u">
                                     <option value="${u.userId}">${u.uLoginAct}</option>
                                 </c:forEach>
                             </select>
                         </div>
                         <label class="col-md-2 control-label">名称<span style="color:red">*</span></label>
-                        <div class="col-md-10"><input type="text" class="form-control"/></div>
+                        <div class="col-md-10"><input type="text" class="form-control" id="edit-ActivityName"/></div>
 
                     </div>
                     <div class="form-group col-md-12">
                         <label>开始日期</label>
-                        <input type="text" class="form-control"/>
+                        <input type="text" class="form-control" id="edit-startDate"/>
                         <label>结束日期</label>
-                        <input type="text" class="form-control"/>
+                        <input type="text" class="form-control" id="edit-endDate"/>
                     </div>
                     <div class="form-group col-md-12">
                         <label>成本</label>
-                        <input type="text" class="form-control"/>
+                        <input type="text" class="form-control" id="edit-cost"/>
                     </div>
                     <div class="form-group col-md-12">
                         <label>描述</label>
-                        <textarea class="form-control" rows="3"></textarea>
+                        <textarea class="form-control" rows="3" id="edit-describe"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -340,11 +420,11 @@
             <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
             创建
         </button>
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#edit-ActivityModel">
+        <button type="button" class="btn btn-default" id="editActivityBtn">
             <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
             修改
         </button>
-        <button type="button" class="btn btn-warning">
+        <button type="button" class="btn btn-warning" id="deleteActivityBtn">
             <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>删除
         </button>
         <div class="btn-group" role="group">
@@ -363,7 +443,7 @@
     <table class="table table-striped text-left">
         <thead>
         <tr>
-            <th><input type="checkbox"></th>
+            <th><input type="checkbox" id="checkAll"></th>
             <th>名称</th>
             <th>所有者</th>
             <th>开始日期</th>
@@ -375,21 +455,7 @@
         </tbody>
     </table>
     <!--分页查询-->
-    <div class="col-md-12">
-        <button class="btn btn-default">共<b id="totalRowsId">50</b>条数据</button>
-        <div class="btn-group  col-md-4" role="group" aria-label="...">
-            <button class="btn btn-default">显示</button>
-            <div class="btn-group" role="group">
-                <select class="form-control" id="pageSize">
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                </select>
-            </div>
-            <button class="btn btn-default">条/页</button>
-        </div>
-        <div id="demo_page1">
-        </div>
+    <div class="col-md-12" id="demo_page1">
     </div>
 </div>
 </body>

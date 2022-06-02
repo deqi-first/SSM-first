@@ -24,4 +24,7 @@ public interface ActivityMapper {
     List<Activity> selectActivityByConditionForPage(Map<String,Object> map);
 
     int selectCountOfActivityByCondition(Map<String,Object> map);
+
+    int deleteActivityByIds(String[] id);
+
 }

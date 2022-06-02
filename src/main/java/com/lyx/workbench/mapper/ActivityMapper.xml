@@ -19,12 +19,14 @@
     activity_cost, activity_description, activity_create_time, activity_create_by, activity_edit_time, 
     activity_edit_by
   </sql>
-    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="string">
         select
         <include refid="Base_Column_List"/>
         from tbl_activity
-        where activity_id = #{activityId,jdbcType=CHAR}
+        where activity_id = #{id}
     </select>
+
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from tbl_activity
     where activity_id = #{activityId,jdbcType=CHAR}
@@ -213,4 +215,13 @@
             </if>
         </where>
     </select>
+
+    <delete id="deleteActivityByIds" parameterType="string">
+        delete from tbl_activity where activity_id in
+        <foreach collection="array" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
 </mapper>

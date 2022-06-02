@@ -81,4 +81,28 @@ public class ActivityController {
         resultMap.put("totalRows",totalRows);
         return resultMap;
     }
+
+    @RequestMapping("/workbench/activity/delete.do")
+    public @ResponseBody Object delete(String[] id){
+        ReturnObject object = new ReturnObject();
+        try {
+            int i = activityService.deleteActivityByIds(id);
+            if(i>0){
+                object.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+            }else {
+                object.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+                object.setMessage("系统忙，请稍后重试....");
+            }
+        } catch (Exception e) {
+            object.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+            object.setMessage("系统忙，请稍后重试....");
+        }
+        return object;
+    }
+
+    @RequestMapping("/workbench/activity/selectActivityById.do")
+    public @ResponseBody Object selectActivityById(String id){
+        Activity activity = activityService.selectActivityById(id);
+        return activity;
+    }
 }

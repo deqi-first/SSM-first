@@ -13,4 +13,10 @@ public interface ActivityService {
 
     //条件查询市场活动的数量
     int queryCountOfActivityByCondition(Map<String, Object> map);
+
+    //删除市场活动
+    int deleteActivityByIds(String[] ids);
+
+    //id查市场活动
+    Activity selectActivityById(String id);
 }
