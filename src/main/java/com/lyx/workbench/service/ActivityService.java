@@ -19,4 +19,6 @@ public interface ActivityService {
 
     //id查市场活动
     Activity selectActivityById(String id);
+
+    int updateActivity(Activity activity);
 }

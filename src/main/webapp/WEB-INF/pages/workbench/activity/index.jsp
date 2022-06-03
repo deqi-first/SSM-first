@@ -79,7 +79,7 @@
                         if (ret.code == "1") {
                             alert("保存成功");
                             $("#create-ActivityModel").modal("hide");
-                            queryActivityByConditionForPage(1,$("#demo_page1").bs_pagination('getOption', 'rowsPerPage'));
+                            queryActivityByConditionForPage(1, $("#demo_page1").bs_pagination('getOption', 'rowsPerPage'));
                         } else {
                             alert(ret.message);
                             $("#create-ActivityModel").modal("show");
@@ -135,57 +135,57 @@
             //给全选按钮添加单击事件
             $("#checkAll").click(function () {
                 //如果“全选”按钮是选中状态，则列表中所有checkbox都选中
-                $("#tbodyId input[type='checkbox']").prop("checked",this.checked);
+                $("#tbodyId input[type='checkbox']").prop("checked", this.checked);
             });
             //给动态元素添加单击事件
-            $("#tbodyId").on("click","input[type='checkbox']",function () {
+            $("#tbodyId").on("click", "input[type='checkbox']", function () {
                 //如果列表中的所有checkbox都选中，则全选按钮也选中
-                if($("#tbodyId input[type='checkbox']").size()==$("#tbodyId input[type='checkbox']:checked").size()){
-                    $("#checkAll").prop("checked",true);
-                }else{//如果列表中的所有checkbox至少一个没选中，则全选按钮取消选中
-                    $("#checkAll").prop("checked",false);
+                if ($("#tbodyId input[type='checkbox']").size() == $("#tbodyId input[type='checkbox']:checked").size()) {
+                    $("#checkAll").prop("checked", true);
+                } else {//如果列表中的所有checkbox至少一个没选中，则全选按钮取消选中
+                    $("#checkAll").prop("checked", false);
                 }
-            })
+            });
 
             //删除市场活动
             $("#deleteActivityBtn").click(function () {
                 var ids = $("#tbodyId input[type='checkbox']:checked");
-                if(ids.size()==0){
+                if (ids.size() == 0) {
                     alert("请选中要删除的市场活动");
                     return;
                 }
-                if(window.confirm("确定删除吗？")){
+                if (window.confirm("确定删除吗？")) {
                     var myids = "";
-                    $.each(ids,function () {
-                        myids+="id="+this.value+"&";
+                    $.each(ids, function () {
+                        myids += "id=" + this.value + "&";
                     })
-                    myids=myids.substr(0,myids.length-1);
+                    myids = myids.substr(0, myids.length - 1);
                     $.ajax({
-                        url:"/workbench/activity/delete.do",
-                        data:myids,
-                        type:"post",
+                        url: "/workbench/activity/delete.do",
+                        data: myids,
+                        type: "post",
                         dataType: "json",
-                        success:function (ret) {
-                            if(ret.code==1){
+                        success: function (ret) {
+                            if (ret.code == 1) {
                                 alert("删除成功!");
-                                queryActivityByConditionForPage(1,$("#demo_page1").bs_pagination('getOption','rowsPerPage'));
-                            }else{
+                                queryActivityByConditionForPage(1, $("#demo_page1").bs_pagination('getOption', 'rowsPerPage'));
+                            } else {
                                 alert(ret.message);
                             }
                         }
                     })
                 }
-            })
+            });
 
-            //修改市场活动
+            //点击“修改”市场活动弹出窗口
             $("#editActivityBtn").click(function () {
                 //获取列表中被选中的checkbox
                 var checkerIds = $("#tbodyId input[type='checkbox']:checked");
-                if (checkerIds.size()==0){
+                if (checkerIds.size() == 0) {
                     alert("请选择要修改的市场活动");
                     return;
                 }
-                if(checkerIds.size()>1){
+                if (checkerIds.size() > 1) {
                     alert("每次只能选中一条数据修改");
                     return;
                 }
@@ -193,13 +193,13 @@
                 //get(0)获得的是一个DOM对象
                 var id = checkerIds.get(0).value;
                 $.ajax({
-                    url:"/workbench/activity/selectActivityById.do",
-                    data:{
-                        id:id
+                    url: "/workbench/activity/selectActivityById.do",
+                    data: {
+                        id: id
                     },
-                    type:"post",
-                    dataType:"json",
-                    success:function (ret) {
+                    type: "post",
+                    dataType: "json",
+                    success: function (ret) {
                         $("#edit-id").val(ret.activityId);
                         $("#edit-ActivityOwner").val(ret.activityOwner);
                         $("#edit-ActivityName").val(ret.activityName);
@@ -211,7 +211,56 @@
                         $("#edit-ActivityModel").modal("show");
                     }
                 })
-            })
+            });
+            //点击“保存”按钮，保持修改
+            $("#edit-saveBtn").click(function () {
+                //1.获取内容
+                var aId = $("#edit-id").val();
+                var aOwner = $("#edit-ActivityOwner").val();
+                var aName = $("#edit-ActivityName").val();
+                var aStartDate = $("#edit-startDate").val();
+                var aEndDate = $("#edit-endDate").val();
+                var aCost = $("#edit-cost").val();
+                var aDescribe = $("#edit-describe").val();
+                if (aOwner == null || aOwner == "") {
+                    alert("名称和所有者不能为空");
+                    return;
+                }
+                if (aStartDate > aEndDate) {
+                    alert("开始日期必须小于结束日期");
+                    return;
+                }
+                var regExp = /^[1-9][0-9]*$/;
+                if (!regExp.test(aCost)) {
+                    alert("成本必须是正整数");
+                    return;
+                }
+                $.ajax({
+                    url: "/workbench/activity/updateActivity.do",
+                    data: {
+                        activityId: aId,
+                        activityOwner: aOwner,
+                        activityName: aName,
+                        activityStartDate: aStartDate,
+                        activityEndDate: aEndDate,
+                        activityCost: aCost,
+                        activityDescription: aDescribe
+                    },
+                    type:"post",
+                    dataType:"json",
+                    success :function (ret) {
+                        if(ret.code==1){
+                            alert("修改成功！");
+                            $("#edit-ActivityModel").modal("hide");
+                            queryActivityByConditionForPage(1,$("#demo_page1").bs_pagination("getOption","rowsPerPage"));
+                        }else {
+                            alert(ret.message);
+                        }
+                    }
+
+                });
+
+            });
         });
 
         //封装函数
@@ -250,7 +299,7 @@
                     //$("#tbodyId").append(jsp页面片段的字符串);追加显示
                     $("#tbodyId").html(htmlStr);
                     //由于只更新了tbody的内容，所以全选按钮没有更新，如果第一页选中，则第二页也会显示
-                    $("#checkAll").prop("checked",false);
+                    $("#checkAll").prop("checked", false);
                     var totalPages = ret.totalRows % pageSize == 0 ? ret.totalRows / pageSize : ret.totalRows / pageSize + 1;
 
                     $("#demo_page1").bs_pagination({
@@ -270,6 +319,7 @@
                 }
             });
         }
+
     </script>
 </head>
 <body>
@@ -361,7 +411,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-primary" id="edit-saveBtn">保存</button>
                 </div>
             </form>
         </div>

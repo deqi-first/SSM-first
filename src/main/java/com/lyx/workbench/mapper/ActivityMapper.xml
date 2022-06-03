@@ -105,6 +105,7 @@
             </if>
         </trim>
     </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.lyx.workbench.domain.Activity">
         update tbl_activity
         <set>
@@ -222,6 +223,7 @@
             #{id}
         </foreach>
     </delete>
+
 
 
 </mapper>

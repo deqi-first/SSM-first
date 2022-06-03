@@ -43,4 +43,9 @@ public class ActivityServiceImpl implements ActivityService {
     public Activity selectActivityById(String id) {
         return activityMapper.selectByPrimaryKey(id);
     }
+
+    @Override
+    public int updateActivity(Activity activity) {
+        return activityMapper.updateByPrimaryKeySelective(activity);
+    }
 }

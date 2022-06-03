@@ -41,7 +41,8 @@ public class ActivityController {
     }
 
     @RequestMapping("/workbench/activity/save.do")
-    public @ResponseBody Object save(Activity activity, HttpSession session) {
+    public @ResponseBody
+    Object save(Activity activity, HttpSession session) {
         User user = (User) session.getAttribute(Contants.SESSION_USER);
         activity.setActivityId(UUIDUtils.getUUID());
         activity.setActivityCreateBy(user.getUserId());
@@ -50,9 +51,9 @@ public class ActivityController {
         ReturnObject returnObject = new ReturnObject();
         try {
             i = activityService.saveActivity(activity);
-            if(i==1){
+            if (i == 1) {
                 returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
-            }else {
+            } else {
                 returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
                 returnObject.setMessage("系统忙,请稍后重试...");
             }
@@ -65,31 +66,33 @@ public class ActivityController {
     }
 
     @RequestMapping("/workbench/activity/search.do")
-    public @ResponseBody Object search(String name,String owner,String startDate,String endDate,
-                                       Integer pageNo,Integer pageSize){
-        Map<String,Object> map = new HashMap<>();
-        map.put("activity_name",name);
-        map.put("activity_owner",owner);
-        map.put("activity_start_date",startDate);
-        map.put("activity_end_date",endDate);
-        map.put("pageNo",pageNo-1);
-        map.put("pageSize",pageSize);
+    public @ResponseBody
+    Object search(String name, String owner, String startDate, String endDate,
+                  Integer pageNo, Integer pageSize) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("activity_name", name);
+        map.put("activity_owner", owner);
+        map.put("activity_start_date", startDate);
+        map.put("activity_end_date", endDate);
+        map.put("pageNo", pageNo - 1);
+        map.put("pageSize", pageSize);
         List<Activity> activities = activityService.queryActivityByConditionForPage(map);
         int totalRows = activityService.queryCountOfActivityByCondition(map);
-        Map<String,Object> resultMap = new HashMap<>();
-        resultMap.put("activities",activities);
-        resultMap.put("totalRows",totalRows);
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("activities", activities);
+        resultMap.put("totalRows", totalRows);
         return resultMap;
     }
 
     @RequestMapping("/workbench/activity/delete.do")
-    public @ResponseBody Object delete(String[] id){
+    public @ResponseBody
+    Object delete(String[] id) {
         ReturnObject object = new ReturnObject();
         try {
             int i = activityService.deleteActivityByIds(id);
-            if(i>0){
+            if (i > 0) {
                 object.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
-            }else {
+            } else {
                 object.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
                 object.setMessage("系统忙，请稍后重试....");
             }
@@ -101,8 +104,29 @@ public class ActivityController {
     }
 
     @RequestMapping("/workbench/activity/selectActivityById.do")
-    public @ResponseBody Object selectActivityById(String id){
+    public @ResponseBody
+    Object selectActivityById(String id) {
         Activity activity = activityService.selectActivityById(id);
         return activity;
+    }
+
+    @RequestMapping("/workbench/activity/updateActivity.do")
+    public @ResponseBody
+    Object updateActivity(Activity activity) {
+        ReturnObject returnObject = new ReturnObject();
+        try {
+            int i = activityService.updateActivity(activity);
+            if (i > 0) {
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+            } else {
+                returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+                returnObject.setMessage("系统忙，请稍后重试....");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+            returnObject.setMessage("系统忙，请稍后重试....");
+        }
+        return returnObject;
     }
 }
