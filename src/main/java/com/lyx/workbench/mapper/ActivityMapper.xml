@@ -14,18 +14,19 @@
         <result column="activity_edit_time" property="activityEditTime" jdbcType="CHAR"/>
         <result column="activity_edit_by" property="activityEditBy" jdbcType="VARCHAR"/>
     </resultMap>
+
     <sql id="Base_Column_List">
     activity_id, activity_owner, activity_name, activity_start_date, activity_end_date, 
     activity_cost, activity_description, activity_create_time, activity_create_by, activity_edit_time, 
     activity_edit_by
   </sql>
+
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="string">
         select
         <include refid="Base_Column_List"/>
         from tbl_activity
         where activity_id = #{id}
     </select>
-
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from tbl_activity
@@ -142,6 +143,7 @@
         </set>
         where activity_id = #{activityId,jdbcType=CHAR}
     </update>
+
     <update id="updateByPrimaryKey" parameterType="com.lyx.workbench.domain.Activity">
     update tbl_activity
     set activity_owner = #{activityOwner,jdbcType=CHAR},
@@ -156,6 +158,7 @@
       activity_edit_by = #{activityEditBy,jdbcType=VARCHAR}
     where activity_id = #{activityId,jdbcType=CHAR}
   </update>
+
     <insert id="insertActivity" parameterType="com.lyx.workbench.domain.Activity">
     insert into tbl_activity (activity_id, activity_owner, activity_name,
       activity_start_date, activity_end_date, activity_cost,
@@ -193,7 +196,6 @@
         order by a.activity_create_time desc
         limit #{pageNo},#{pageSize}
     </select>
-
 
     <select id="selectCountOfActivityByCondition" parameterType="map" resultType="int">
         select count(*)

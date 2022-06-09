@@ -125,6 +125,25 @@
                 todayBtn: true,
                 clearBtn: true
             });
+            $("#edit-startDate").datetimepicker({
+                language:'zh-CN',
+                format:'yyyy-mm-dd',
+                minView:'month',
+                initialDate:new Date(),
+                autoclose:true,
+                todayBtn:true,
+                clearBtn:true
+            })
+            $("#edit-endDate").datetimepicker({
+                language:'zh-CN',
+                format:'yyyy-mm-dd',
+                minView:'month',
+                initialDate:new Date(),
+                autoclose:true,
+                todayBtn:true,
+                clearBtn:true
+            })
+
             //当市场活动主页面加载完成，查询所有数据的第一页集街所有数据的总条数
             queryActivityByConditionForPage(1, 5);
             //给查询按钮添加单击事件
@@ -140,7 +159,7 @@
             //给动态元素添加单击事件
             $("#tbodyId").on("click", "input[type='checkbox']", function () {
                 //如果列表中的所有checkbox都选中，则全选按钮也选中
-                if ($("#tbodyId input[type='checkbox']").size() == $("#tbodyId input[type='checkbox']:checked").size()) {
+                if ($("#tbodyId input[type='checkbox']").size() == $("#tbodyId input[type='checkbox']:checked").size()){
                     $("#checkAll").prop("checked", true);
                 } else {//如果列表中的所有checkbox至少一个没选中，则全选按钮取消选中
                     $("#checkAll").prop("checked", false);
@@ -194,9 +213,7 @@
                 var id = checkerIds.get(0).value;
                 $.ajax({
                     url: "/workbench/activity/selectActivityById.do",
-                    data: {
-                        id: id
-                    },
+                    data: {id: id},
                     type: "post",
                     dataType: "json",
                     success: function (ret) {
@@ -212,7 +229,7 @@
                     }
                 })
             });
-            //点击“保存”按钮，保持修改
+            //点击“保存”按钮，保存修改
             $("#edit-saveBtn").click(function () {
                 //1.获取内容
                 var aId = $("#edit-id").val();
@@ -262,7 +279,6 @@
 
             });
         });
-
         //封装函数
         function queryActivityByConditionForPage(pageNo, pageSize) {
             var name = $("#query_name").val();
@@ -319,7 +335,6 @@
                 }
             });
         }
-
     </script>
 </head>
 <body>
@@ -396,9 +411,9 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label>开始日期</label>
-                        <input type="text" class="form-control" id="edit-startDate"/>
+                        <input type="text" class="form-control" id="edit-startDate" readonly/>
                         <label>结束日期</label>
-                        <input type="text" class="form-control" id="edit-endDate"/>
+                        <input type="text" class="form-control" id="edit-endDate" readonly/>
                     </div>
                     <div class="form-group col-md-12">
                         <label>成本</label>
