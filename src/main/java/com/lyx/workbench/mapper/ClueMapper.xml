@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lyx.workbench.mapper.ClueMapper" >
+  <resultMap id="BaseResultMap" type="com.lyx.workbench.domain.Clue" >
+    <id column="clue_id" property="clueId" jdbcType="CHAR" />
+    <result column="clue_owner" property="clueOwner" jdbcType="CHAR" />
+    <result column="clue_remark_idcompany" property="clueRemarkIdcompany" jdbcType="VARCHAR" />
+    <result column="clue_appellation" property="clueAppellation" jdbcType="VARCHAR" />
+    <result column="clue_fullname" property="clueFullname" jdbcType="VARCHAR" />
+    <result column="clue_job" property="clueJob" jdbcType="VARCHAR" />
+    <result column="clue_email" property="clueEmail" jdbcType="VARCHAR" />
+    <result column="clue_mphone" property="clueMphone" jdbcType="VARCHAR" />
+    <result column="clue_website" property="clueWebsite" jdbcType="VARCHAR" />
+    <result column="clue_phone" property="cluePhone" jdbcType="VARCHAR" />
+    <result column="clue_state" property="clueState" jdbcType="VARCHAR" />
+    <result column="clue_source" property="clueSource" jdbcType="VARCHAR" />
+    <result column="clue_description" property="clueDescription" jdbcType="VARCHAR" />
+    <result column="clue_contact_summary" property="clueContactSummary" jdbcType="VARCHAR" />
+    <result column="clue_create_by" property="clueCreateBy" jdbcType="VARCHAR" />
+    <result column="clue_create_time" property="clueCreateTime" jdbcType="CHAR" />
+    <result column="clue_edit_by" property="clueEditBy" jdbcType="VARCHAR" />
+    <result column="clue_edit_time" property="clueEditTime" jdbcType="CHAR" />
+    <result column="clue_next_contact_time" property="clueNextContactTime" jdbcType="CHAR" />
+    <result column="clue_address" property="clueAddress" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    clue_id, clue_owner, clue_remark_idcompany, clue_appellation, clue_fullname, clue_job, 
+    clue_email, clue_mphone, clue_website, clue_phone, clue_state, clue_source, clue_description, 
+    clue_contact_summary, clue_create_by, clue_create_time, clue_edit_by, clue_edit_time, 
+    clue_next_contact_time, clue_address
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_clue
+    where clue_id = #{clueId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from tbl_clue
+    where clue_id = #{clueId,jdbcType=CHAR}
+  </delete>
+  <insert id="insert" parameterType="com.lyx.workbench.domain.Clue" >
+    insert into tbl_clue (clue_id, clue_owner, clue_remark_idcompany, 
+      clue_appellation, clue_fullname, clue_job, 
+      clue_email, clue_mphone, clue_website, 
+      clue_phone, clue_state, clue_source, 
+      clue_description, clue_contact_summary, clue_create_by, 
+      clue_create_time, clue_edit_by, clue_edit_time, 
+      clue_next_contact_time, clue_address)
+    values (#{clueId,jdbcType=CHAR}, #{clueOwner,jdbcType=CHAR}, #{clueRemarkIdcompany,jdbcType=VARCHAR}, 
+      #{clueAppellation,jdbcType=VARCHAR}, #{clueFullname,jdbcType=VARCHAR}, #{clueJob,jdbcType=VARCHAR}, 
+      #{clueEmail,jdbcType=VARCHAR}, #{clueMphone,jdbcType=VARCHAR}, #{clueWebsite,jdbcType=VARCHAR}, 
+      #{cluePhone,jdbcType=VARCHAR}, #{clueState,jdbcType=VARCHAR}, #{clueSource,jdbcType=VARCHAR}, 
+      #{clueDescription,jdbcType=VARCHAR}, #{clueContactSummary,jdbcType=VARCHAR}, #{clueCreateBy,jdbcType=VARCHAR}, 
+      #{clueCreateTime,jdbcType=CHAR}, #{clueEditBy,jdbcType=VARCHAR}, #{clueEditTime,jdbcType=CHAR}, 
+      #{clueNextContactTime,jdbcType=CHAR}, #{clueAddress,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lyx.workbench.domain.Clue" >
+    insert into tbl_clue
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="clueId != null" >
+        clue_id,
+      </if>
+      <if test="clueOwner != null" >
+        clue_owner,
+      </if>
+      <if test="clueRemarkIdcompany != null" >
+        clue_remark_idcompany,
+      </if>
+      <if test="clueAppellation != null" >
+        clue_appellation,
+      </if>
+      <if test="clueFullname != null" >
+        clue_fullname,
+      </if>
+      <if test="clueJob != null" >
+        clue_job,
+      </if>
+      <if test="clueEmail != null" >
+        clue_email,
+      </if>
+      <if test="clueMphone != null" >
+        clue_mphone,
+      </if>
+      <if test="clueWebsite != null" >
+        clue_website,
+      </if>
+      <if test="cluePhone != null" >
+        clue_phone,
+      </if>
+      <if test="clueState != null" >
+        clue_state,
+      </if>
+      <if test="clueSource != null" >
+        clue_source,
+      </if>
+      <if test="clueDescription != null" >
+        clue_description,
+      </if>
+      <if test="clueContactSummary != null" >
+        clue_contact_summary,
+      </if>
+      <if test="clueCreateBy != null" >
+        clue_create_by,
+      </if>
+      <if test="clueCreateTime != null" >
+        clue_create_time,
+      </if>
+      <if test="clueEditBy != null" >
+        clue_edit_by,
+      </if>
+      <if test="clueEditTime != null" >
+        clue_edit_time,
+      </if>
+      <if test="clueNextContactTime != null" >
+        clue_next_contact_time,
+      </if>
+      <if test="clueAddress != null" >
+        clue_address,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="clueId != null" >
+        #{clueId,jdbcType=CHAR},
+      </if>
+      <if test="clueOwner != null" >
+        #{clueOwner,jdbcType=CHAR},
+      </if>
+      <if test="clueRemarkIdcompany != null" >
+        #{clueRemarkIdcompany,jdbcType=VARCHAR},
+      </if>
+      <if test="clueAppellation != null" >
+        #{clueAppellation,jdbcType=VARCHAR},
+      </if>
+      <if test="clueFullname != null" >
+        #{clueFullname,jdbcType=VARCHAR},
+      </if>
+      <if test="clueJob != null" >
+        #{clueJob,jdbcType=VARCHAR},
+      </if>
+      <if test="clueEmail != null" >
+        #{clueEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="clueMphone != null" >
+        #{clueMphone,jdbcType=VARCHAR},
+      </if>
+      <if test="clueWebsite != null" >
+        #{clueWebsite,jdbcType=VARCHAR},
+      </if>
+      <if test="cluePhone != null" >
+        #{cluePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="clueState != null" >
+        #{clueState,jdbcType=VARCHAR},
+      </if>
+      <if test="clueSource != null" >
+        #{clueSource,jdbcType=VARCHAR},
+      </if>
+      <if test="clueDescription != null" >
+        #{clueDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="clueContactSummary != null" >
+        #{clueContactSummary,jdbcType=VARCHAR},
+      </if>
+      <if test="clueCreateBy != null" >
+        #{clueCreateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="clueCreateTime != null" >
+        #{clueCreateTime,jdbcType=CHAR},
+      </if>
+      <if test="clueEditBy != null" >
+        #{clueEditBy,jdbcType=VARCHAR},
+      </if>
+      <if test="clueEditTime != null" >
+        #{clueEditTime,jdbcType=CHAR},
+      </if>
+      <if test="clueNextContactTime != null" >
+        #{clueNextContactTime,jdbcType=CHAR},
+      </if>
+      <if test="clueAddress != null" >
+        #{clueAddress,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lyx.workbench.domain.Clue" >
+    update tbl_clue
+    <set >
+      <if test="clueOwner != null" >
+        clue_owner = #{clueOwner,jdbcType=CHAR},
+      </if>
+      <if test="clueRemarkIdcompany != null" >
+        clue_remark_idcompany = #{clueRemarkIdcompany,jdbcType=VARCHAR},
+      </if>
+      <if test="clueAppellation != null" >
+        clue_appellation = #{clueAppellation,jdbcType=VARCHAR},
+      </if>
+      <if test="clueFullname != null" >
+        clue_fullname = #{clueFullname,jdbcType=VARCHAR},
+      </if>
+      <if test="clueJob != null" >
+        clue_job = #{clueJob,jdbcType=VARCHAR},
+      </if>
+      <if test="clueEmail != null" >
+        clue_email = #{clueEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="clueMphone != null" >
+        clue_mphone = #{clueMphone,jdbcType=VARCHAR},
+      </if>
+      <if test="clueWebsite != null" >
+        clue_website = #{clueWebsite,jdbcType=VARCHAR},
+      </if>
+      <if test="cluePhone != null" >
+        clue_phone = #{cluePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="clueState != null" >
+        clue_state = #{clueState,jdbcType=VARCHAR},
+      </if>
+      <if test="clueSource != null" >
+        clue_source = #{clueSource,jdbcType=VARCHAR},
+      </if>
+      <if test="clueDescription != null" >
+        clue_description = #{clueDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="clueContactSummary != null" >
+        clue_contact_summary = #{clueContactSummary,jdbcType=VARCHAR},
+      </if>
+      <if test="clueCreateBy != null" >
+        clue_create_by = #{clueCreateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="clueCreateTime != null" >
+        clue_create_time = #{clueCreateTime,jdbcType=CHAR},
+      </if>
+      <if test="clueEditBy != null" >
+        clue_edit_by = #{clueEditBy,jdbcType=VARCHAR},
+      </if>
+      <if test="clueEditTime != null" >
+        clue_edit_time = #{clueEditTime,jdbcType=CHAR},
+      </if>
+      <if test="clueNextContactTime != null" >
+        clue_next_contact_time = #{clueNextContactTime,jdbcType=CHAR},
+      </if>
+      <if test="clueAddress != null" >
+        clue_address = #{clueAddress,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where clue_id = #{clueId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lyx.workbench.domain.Clue" >
+    update tbl_clue
+    set clue_owner = #{clueOwner,jdbcType=CHAR},
+      clue_remark_idcompany = #{clueRemarkIdcompany,jdbcType=VARCHAR},
+      clue_appellation = #{clueAppellation,jdbcType=VARCHAR},
+      clue_fullname = #{clueFullname,jdbcType=VARCHAR},
+      clue_job = #{clueJob,jdbcType=VARCHAR},
+      clue_email = #{clueEmail,jdbcType=VARCHAR},
+      clue_mphone = #{clueMphone,jdbcType=VARCHAR},
+      clue_website = #{clueWebsite,jdbcType=VARCHAR},
+      clue_phone = #{cluePhone,jdbcType=VARCHAR},
+      clue_state = #{clueState,jdbcType=VARCHAR},
+      clue_source = #{clueSource,jdbcType=VARCHAR},
+      clue_description = #{clueDescription,jdbcType=VARCHAR},
+      clue_contact_summary = #{clueContactSummary,jdbcType=VARCHAR},
+      clue_create_by = #{clueCreateBy,jdbcType=VARCHAR},
+      clue_create_time = #{clueCreateTime,jdbcType=CHAR},
+      clue_edit_by = #{clueEditBy,jdbcType=VARCHAR},
+      clue_edit_time = #{clueEditTime,jdbcType=CHAR},
+      clue_next_contact_time = #{clueNextContactTime,jdbcType=CHAR},
+      clue_address = #{clueAddress,jdbcType=VARCHAR}
+    where clue_id = #{clueId,jdbcType=CHAR}
+  </update>
+</mapper>
