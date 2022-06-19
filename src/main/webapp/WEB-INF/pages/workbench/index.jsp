@@ -18,9 +18,6 @@
             $("#closeBtn").click();
         }
         $(function () {
-            // $("#activityId").click(function () {
-            //     window.open("/workbench/activity/toIndex.do", "workAreaFrame")
-            // })
             window.open("/workbench/main/index.do", "workAreaFrame")
         });
         window.onload = function () {
